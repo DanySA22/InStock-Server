@@ -1,13 +1,12 @@
 const express = require("express")
 const router = express.Router()
 const knex = require("knex")(require("../knexfile"))
-
 const { Knex } = require("knex")
 const { body, validationResult } = require("express-validator")
 
 //Tentative endpoint denomination
 
-//get warehouse list (the first 7 warehouse)
+//get warehouse list
 router
   .route("/")
   .get(async (req, res) => {
@@ -25,35 +24,13 @@ router
       const checkForLetter = "@"
       if (!req.body.warehouse_name || !req.body.address || !req.body.city || !req.body.country || !req.body.contact_name || !req.body.contact_position || !req.body.contact_phone || !req.body.contact_email) {
         res.status(400).send("Missing properties on the request body")
-      } else if (req.body.contact_phone.length !== 10 || req.body.contact_email.includes(checkForLetter) === false) {
-        console.log(req.body.contact_phone.length)
+      } else if (String(req.body.contact_phone).length !== 10 || req.body.contact_email.includes(checkForLetter) == false) {
         res.status(400).send("Invalid email or phone number")
-
-        const checkForLetter = "@"
-        if (req.body.warehouse_name == null || req.body.address == null || req.body.city == null || req.body.country == null || req.body.contact_name == null || req.body.contact_position == null || req.body.contact_phone == null || req.body.contact_email == null) {
-          res.status(400).send("Missing properties on the request body")
-        } else if (req.body.contact_phone.length !== 17 || req.body.contact_email.includes(checkForLetter) === false) {
-          console.log(req.body.contact_phone.length)
-          res.status(400).send("Invalid email or phone number")
-        } else {
-          const idAmount = await knex("warehouses").pluck("id")
-          req.body.id = idAmount.length //Pendent to test this one
-          console.log(req.body)
-          await knex("warehouses").insert(req.body)
-          res.status(200).json(req.body)
-        }
-        if (req.body.warehouse_name == null || req.body.address == null || req.body.city == null || req.body.country == null || req.body.contact_name == null || req.body.contact_position == null || req.body.contact_phone == null || req.body.contact_email == null) {
-          res.status(400).send("Missing properties on the request body")
-        } else if (req.body.contact_phone.length !== 17 || req.body.contact_email.includes(checkForLetter) === false) {
-          console.log(req.body.contact_phone.length)
-          res.status(400).send("Invalid email or phone number")
-        } else {
-          const idAmount = await knex("warehouses").pluck("id")
-          req.body.id = idAmount.length + 1
-          console.log(req.body)
-          await knex("warehouses").insert(req.body)
-          res.status(200).json(req.body)
-        }
+      } else {
+        const idAmount = await knex("warehouses").pluck("id")
+        req.body.id = idAmount.length + 1
+        await knex("warehouses").insert(req.body)
+        res.status(200).json(req.body)
       }
     } catch (error) {
       console.log("This is the error:", error)
@@ -96,9 +73,6 @@ router
     }
   })
 
-  //put update a warehouse
-  .put(async (req, res) => {})
-
 // Back-End: API to PUT/EDIT a Warehouse   ==========Toba ===========
 const warehouseValidator = [
   body("warehouse_name").notEmpty().withMessage("Warehouse name is required").trim(),
@@ -124,11 +98,11 @@ router
     const { id } = req.params
     const updateData = req.body
     try {
-      const updated = await knex("warehouses").where({ id }).update(updateData).returning("*")
       if (updateData.length === 0) {
         return res.status(404).json({ message: "Warehouse ID not found" })
       }
-      res.status(200).json(updated[0])
+      const updated = await knex("warehouses").where({ id }).update(updateData)
+      res.status(200).json(updateData)
     } catch (error) {
       res.status(500).json({ message: "Internal server error", error: error.message })
       console.error("This is the error:", error)
