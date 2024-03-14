@@ -39,8 +39,8 @@ router
     try {
     } catch (error) {
       console.log("This is the error:", error)
-
- 
+    }
+  )}
 router.route('/:id')
 //get one inventory item information 
 .get(async (req, res) =>  {
