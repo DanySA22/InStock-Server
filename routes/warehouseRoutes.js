@@ -79,7 +79,7 @@ router
 
 
   
-//get one warehouse information based in the id 
+//get one warehouse information based on the id 
 router
   .route("/:id")
   .get(async (req, res) => {
