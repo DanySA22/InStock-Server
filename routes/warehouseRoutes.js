@@ -97,6 +97,7 @@ router
     }
   });
 
+  
 router
   .route("/:id")
   //get one warehouse information based in the id  //=======Toba =========
