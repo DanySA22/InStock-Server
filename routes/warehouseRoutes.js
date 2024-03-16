@@ -151,7 +151,7 @@ router.route("/:id").put(warehouseValidator, async (req, res) => {
 
 // delete a warehouse
 router
-  .route("/:id")
+.route("/:id")
   .delete(async (req, res) => {
   try {
     await knex("warehouses").where("id", req.params.id).del();
