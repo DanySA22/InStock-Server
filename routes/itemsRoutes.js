@@ -42,24 +42,8 @@ router
     }
   })
 
-router.route('/:id')
-//get one inventory item information 
-.get(async (req, res) =>  {
-    try { const id =req.params.id;
-    const item = await knex("inventories").where({id:id}).first();
-    if(!item){
-      return res.status(404).json({error: "Item not found"})
-    }
-    res.status(200).json(item);
-        
-    } catch (error) {
-        console.log('Error in get one inventory item information:', error)
-        res.status(500).json({ error: "Internal server error" });
 
-    }
-  })
-//get one inventory item information 
-// router.route('/:id')
+router.route('/:id')
   .get(async (req, res) => {
     try {
       const id = req.params.id;
